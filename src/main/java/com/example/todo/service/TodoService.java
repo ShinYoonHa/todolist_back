@@ -19,18 +19,20 @@ public class TodoService {
 	private TodoRepository repository;
 	
 	//create
-	public Optional<TodoEntity>create(final TodoEntity entity){
+	public List<TodoEntity> create(final TodoEntity entity){
 		//Validations
 		validate(entity);
 		repository.save(entity);
-		return repository.findById(entity.getId());
+		//return repository.findById(entity.getId());
+		return repository.findByUserId(entity.getUserId());
+
 	}
 	//retrieve
 	public List<TodoEntity>retrieve(final String userId){
 		return repository.findByUserId(userId);
 	}
 	//update
-	public Optional<TodoEntity> update(final TodoEntity entity) {
+	public List<TodoEntity> update(final TodoEntity entity) {
 		//Validations
 		validate(entity);
 		if(repository.existsById(entity.getId())) {
@@ -38,10 +40,11 @@ public class TodoService {
 		} else {
 			throw new RuntimeException("Unknown id");
 		}
-		return repository.findById(entity.getId());
+//		return repository.findById(entity.getId());
+		return repository.findByUserId(entity.getUserId());
 	}
 	//update Todo
-	public Optional<TodoEntity> updateTodo(final TodoEntity entity) {
+	public List<TodoEntity> updateTodo(final TodoEntity entity) {
 		//Validations
 		validate(entity);
 		
@@ -54,13 +57,18 @@ public class TodoService {
 			todo.setDone(entity.isDone());
 			repository.save(todo);
 		});
-		return repository.findById(entity.getId());
+//		return repository.findById(entity.getId());
+		return repository.findByUserId(entity.getUserId());
 	}
 	//delete
-	public String delete(final String id) {
-		if(repository.existsById(id)) repository.deleteById(id);
-		else throw new RuntimeException("id does not exist");
-		return "Deleted";
+	public  List<TodoEntity> delete(final String id) {
+		if(repository.existsById(id)) {
+			repository.deleteById(id);
+		}
+		else {
+			throw new RuntimeException("id does not exist");
+		}
+		return repository.findAll();
 	}
 	
 	public void validate(final TodoEntity entity){

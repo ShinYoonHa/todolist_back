@@ -2,7 +2,6 @@ package com.example.todo.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class TodoController {
 			
 			// service.create 를 통해 repository 에 entity를 저장한다. 
 			// 이때 넘어노는 값이 없을 수도 있으므로 List가 아닌 Optional 로 한다.
-			Optional<TodoEntity> entities = service.create(entity);
+			List<TodoEntity> entities = service.create(entity);
 			log.info("Log:serivce.create ok!");
 			
 			// entities 를 dtos 로 스트림 변환한다.
@@ -66,7 +65,7 @@ public class TodoController {
 		}
 	}
 	@GetMapping
-	public ResponseEntity<?>retrieveTodoList(){
+	public ResponseEntity<?> retrieveTodoList(){
 		String temporaryUserId ="temporary-user";
 		
 		List<TodoEntity> entities = service.retrieve(temporaryUserId);
@@ -85,7 +84,7 @@ public class TodoController {
 			entity.setUserId("temporary-user");
 			// service.create 를 통해 repository 에 entity를 저장한다.
 			// 이때 넘어노는 값이 없을 수도 있으므로 List가 아닌 Optional 로 한다.
-			Optional<TodoEntity> entities = service.update(entity);
+			List<TodoEntity> entities = service.update(entity);
 			// entities 를 dtos 로 스트림 변환한다.
 			List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
 			
@@ -111,7 +110,7 @@ public class TodoController {
 			
 			//service.create를 통해 repository에 entity를 저장한다.
 			//이때 넘어오는 값이 없을 수도 있으니 List가 아닌 Optional로 한다.
-			Optional<TodoEntity> entities = service.updateTodo(entity);
+			List<TodoEntity> entities = service.updateTodo(entity);
 			
 			//entities를 dtos로 스트림 변환한다.
 			List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
@@ -129,12 +128,15 @@ public class TodoController {
 	@DeleteMapping
 	public ResponseEntity<?> delete(@RequestBody TodoDTO dto) {
 		try {
-			List<String> message = new ArrayList<>();
-			String msg = service.delete(dto.getId());
-			message.add(msg);
+//			List<String> message = new ArrayList<>();
+//			String msg = service.delete(dto.getId());
+//			message.add(msg);
+			List<TodoEntity> entities = service.delete(dto.getId());
+			List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+			ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
 			
 			//ResponseDTO를 생성한다.
-			ResponseDTO<String> response = ResponseDTO.<String>builder().data(message).build();
+//			ResponseDTO<String> response = ResponseDTO.<String>builder().data(message).build();
 			return ResponseEntity.ok().body(response);
 		} catch(Exception e) {
 			String error = e.getMessage();
