@@ -43,36 +43,36 @@ public class TodoService {
 //		return repository.findById(entity.getId());
 		return repository.findByUserId(entity.getUserId());
 	}
-	//update Todo
-	public List<TodoEntity> updateTodo(final TodoEntity entity) {
-		//Validations
-		validate(entity);
-		
-		//테이블에서 id에 해당하는 데이터set을 가져온다
-		final Optional<TodoEntity> original = repository.findById(entity.getId());
-		
-		//original에 담겨진 내용을 todo에 할당하고 title, done 값을 변경한다.
-		original.ifPresent(todo -> {
-			todo.setTitle(entity.getTitle());
-			todo.setDone(entity.isDone());
-			repository.save(todo);
-		});
-//		return repository.findById(entity.getId());
-		return repository.findByUserId(entity.getUserId());
-	}
+//	//update Todo 쓰이는것 맞나?
+//	public List<TodoEntity> updateTodo(final TodoEntity entity) {
+//		//Validations
+//		validate(entity);
+//		
+//		//테이블에서 id에 해당하는 데이터set을 가져온다
+//		final Optional<TodoEntity> original = repository.findById(entity.getId());
+//		
+//		//original에 담겨진 내용을 todo에 할당하고 title, done 값을 변경한다.
+//		original.ifPresent(todo -> {
+//			todo.setTitle(entity.getTitle());
+//			todo.setDone(entity.isDone());
+//			repository.save(todo);
+//		});
+////		return repository.findById(entity.getId());
+//		return repository.findByUserId(entity.getUserId());
+//	}
 	//delete
-	public  List<TodoEntity> delete(final String id) {
-		if(repository.existsById(id)) {
-			repository.deleteById(id);
+	public  List<TodoEntity> delete(final TodoEntity entity) {
+		if(repository.existsById(entity.getId())) {
+			repository.deleteById(entity.getId());
 		}
 		else {
 			throw new RuntimeException("id does not exist");
 		}
-		return repository.findAll();
+		return repository.findByUserId(entity.getUserId());
 	}
 	
 	public void validate(final TodoEntity entity){
-		if(entity ==null ){
+		if(entity == null ){
 			log.warn("Entity cannot be null.");
 			throw new RuntimeException("Entity cannot be null.");
 		}
