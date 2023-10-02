@@ -1,6 +1,5 @@
 package com.example.todo.config;
 
-import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,10 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import com.example.todo.security.JwtAuthenticationFilter;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -28,15 +24,15 @@ public class WebSecurityConfig {
         http.cors()
             .and()
             .csrf()
-                .disable()
+            .disable()
             .httpBasic()
-                .disable()
+            .disable()
             .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-                .antMatchers("/", "/auth/**").permitAll()
-                .anyRequest().authenticated()
+            .antMatchers("/", "/auth/**").permitAll()
+            .anyRequest().authenticated()
             .and()
             .headers().frameOptions().sameOrigin();
 
